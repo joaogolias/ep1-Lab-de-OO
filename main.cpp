@@ -9,23 +9,27 @@ using namespace std;
 
 int getTamanhoDaRede();
 int imprimirEscolhaUmaOpcao();
+string imprimirGetDepartamento();
+Disciplina* imprimirInformeOsDadosDaDisciplina();
 Perfil* imprimirInformaOsDadosDoPerfil();
 
 int main(){
     int tamanhoDaRede, escolhaUmaOpcao;
-    tamanhoDaRede = getTamanhoDaRede();
-    escolhaUmaOpcao = imprimirEscolhaUmaOpcao();
+    //tamanhoDaRede = getTamanhoDaRede();
+    //escolhaUmaOpcao = imprimirEscolhaUmaOpcao()
+    string teste = imprimirGetDepartamento();
+    cout << "Teste: " << teste;
 
-    Perfil *p = imprimirInformaOsDadosDoPerfil();
-    Professor* aptr = dynamic_cast<Professor*>(p);
-    Perfil *a = dynamic_cast<Perfil*>(p);
-    if(aptr == 0) cout << "P is not a professor" <<endl;
-    if(a == 0) cout << "P is not a perfil" <<endl;
+    // Perfil *p = imprimirInformaOsDadosDoPerfil();
+    // Professor* aptr = dynamic_cast<Professor*>(p);
+    // Perfil *a = dynamic_cast<Perfil*>(p);
+    // if(aptr == 0) cout << "P is not a professor" <<endl;
+    // if(a == 0) cout << "P is not a perfil" <<endl;
 
 
-    while(escolhaUmaOpcao != 0){
+    // while(escolhaUmaOpcao != 0){
         
-    }
+    // }
 
 
     /*
@@ -143,4 +147,13 @@ Perfil* imprimirInformaOsDadosDoPerfil(){
     else perfilACadastrar = new Perfil(nusp, nome, email);
 
     return perfilACadastrar;
+}
+
+string imprimirGetDepartamento(){
+    string departamento;
+    cout << "Departamento: ";
+    cin.ignore(100,'\n');
+    getline(cin, departamento);
+    cout << departamento;
+    return departamento;
 }
