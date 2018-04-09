@@ -17,10 +17,11 @@ int main(){
     int tamanhoDaRede, escolhaUmaOpcao;
     //tamanhoDaRede = getTamanhoDaRede();
     //escolhaUmaOpcao = imprimirEscolhaUmaOpcao()
-    string teste = imprimirGetDepartamento();
-    cout << "Teste: " << teste;
 
-    // Perfil *p = imprimirInformaOsDadosDoPerfil();
+    Perfil *p = imprimirInformaOsDadosDoPerfil();
+    cout << p->getNome() << endl;
+    p = imprimirInformaOsDadosDoPerfil();
+    cout << p->getNome() << endl;
     // Professor* aptr = dynamic_cast<Professor*>(p);
     // Perfil *a = dynamic_cast<Perfil*>(p);
     // if(aptr == 0) cout << "P is not a professor" <<endl;
@@ -140,8 +141,7 @@ Perfil* imprimirInformaOsDadosDoPerfil(){
     cout <<"Professor (s/n): ";
     getline(cin, ehProfessor);
     if(ehProfessor == "s"){
-        cout << "Departamento: ";
-        getline(cin, departamento);
+        departamento = imprimirGetDepartamento();
         perfilACadastrar = new Professor(nusp, nome, email, departamento);
     }
     else perfilACadastrar = new Perfil(nusp, nome, email);
@@ -152,8 +152,6 @@ Perfil* imprimirInformaOsDadosDoPerfil(){
 string imprimirGetDepartamento(){
     string departamento;
     cout << "Departamento: ";
-    cin.ignore(100,'\n');
     getline(cin, departamento);
-    cout << departamento;
     return departamento;
 }
