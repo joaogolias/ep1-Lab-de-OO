@@ -21,6 +21,10 @@ Perfil::~Perfil(){
     } 
 }
 
+int Perfil::getNumeroUSP(){
+    return this->numeroUSP;
+}
+
 string Perfil::getNome(){
     return this->nome;
 }

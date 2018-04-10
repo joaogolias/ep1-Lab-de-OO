@@ -4,6 +4,7 @@
 #include "./Perfil.h"
 #include "./Professor.h"
 #include "./Disciplina.h"
+#include "./Evento.h"
 
 using namespace std;
 
@@ -13,10 +14,13 @@ string imprimirGetDepartamento();
 Perfil * imprimirEscolhaUmPerfil(int quantidadeDePerfis, RedeSocial *rede);
 Disciplina* imprimirInformeOsDadosDaDisciplina();
 Perfil* imprimirInformaOsDadosDoPerfil();
+void imprimirFazerPublicacao(Perfil *perfil);
+void imprimirVerPublicacoes(Perfil *perfil);
+int imprimirPerfil(Perfil *perfil);
 
 int main(){
     Perfil *perfilGenerico;
-    int tamanhoDaRede, escolhaUmaOpcao, quantidadeDePerfis = 0;
+    int tamanhoDaRede, escolhaUmaOpcao, quantidadeDePerfis = 0, escolhaPerfil;
     tamanhoDaRede = getTamanhoDaRede();
     RedeSocial *rede = new RedeSocial(tamanhoDaRede);
     escolhaUmaOpcao = imprimirEscolhaUmaOpcao();
@@ -29,8 +33,20 @@ int main(){
             quantidadeDePerfis ++;
         }
         if(escolhaUmaOpcao == 3){
-            perfilGenerico = imprimirEscolhaUmPerfil(quantidadeDePerfis, rede);
-            cout << "NOME DO PERFIL LOGADO: " << perfilGenerico -> getNome() << endl;
+            escolhaPerfil = 4;
+            cout << "oi" << endl;
+            while(escolhaPerfil != 0){
+                cout << "oi2" << endl;
+                if(escolhaPerfil == 1){
+                    imprimirVerPublicacoes(perfilGenerico);
+                }
+                if(escolhaPerfil == 2){
+                    imprimirFazerPublicacao(perfilGenerico);
+                }
+                cout << "oi3" << endl;
+                perfilGenerico = imprimirEscolhaUmPerfil(quantidadeDePerfis, rede);
+                escolhaPerfil = imprimirPerfil(perfilGenerico);
+            }
         }
         if(escolhaUmaOpcao != 0) escolhaUmaOpcao = imprimirEscolhaUmaOpcao();
     }
@@ -160,6 +176,8 @@ Perfil* imprimirInformaOsDadosDoPerfil(){
 
     return perfilACadastrar;
 }
+
+
 Perfil * imprimirEscolhaUmPerfil(int quantidadeDePerfis, RedeSocial *rede){
     int escolha;
     Perfil **perfis;
@@ -171,9 +189,65 @@ Perfil * imprimirEscolhaUmPerfil(int quantidadeDePerfis, RedeSocial *rede){
     }
     cout << "Digite o número ou 0 para cancelar: "<<endl;
     cin >> escolha;
-    if(escolha != 0) return perfis[escolha-1];
+    if(escolha != 0 && escolha<=quantidadeDePerfis) return perfis[escolha-1];
     return NULL;
 }
+
+int imprimirPerfil(Perfil *perfil){
+    int escolha;
+    cout << perfil -> getNumeroUSP() << " - " << perfil -> getNome() << endl;
+    Professor *isProfessor = dynamic_cast<Professor*>(perfil);
+    if(isProfessor != 0)cout << "Departamento "<< isProfessor -> getDepartamento() << endl;
+    cout << "Seguidores: " << perfil -> getQuanitdadeDeSeguidores() << endl;
+    cout << "---" << endl;
+    cout << "Escolha uma opção: " << endl;
+    cout << "1) Ver publicacoes" << endl;
+    cout << "2) Fazer publicacao" << endl;
+    Disciplina *disciplina = dynamic_cast<Disciplina*>(perfil);
+    if(disciplina == 0) cout << "3) Seguir perfil" << endl;
+    cout << "0) Deslogar" << endl;
+    cin >> escolha;
+    return escolha;
+}
+
+void imprimirFazerPublicacao(Perfil *perfil){
+    string evento, texto, data;
+    cout << "Evento (s/n): " << endl;
+    getline(cin, evento);
+    cin.ignore(100,"\n");    
+    if(evento == "s"){
+        cout << "Data: " << endl;
+        getline(cin, data);
+        cout << "Texto: " << endl;
+        getline(cin, texto);
+        perfil -> publicar(texto,data);
+    }
+    else{
+        cout << "Texto: " << endl;
+        getline(cin, texto);
+        perfil -> publicar(texto);
+    }
+    
+}
+void imprimirVerPublicacoes(Perfil *perfil){
+    int curtida;
+    cout << "Publicacoes"<<endl;
+    Publicacao *publicacao;
+    Publicacao **publicacoes = perfil -> getPublicacoes();
+    for(int i = 0; i < perfil->getQuantidaDePublicacoes(); i++){
+        publicacao = publicacoes[i];
+        cout << i+1 << ") " << publicacao -> getTexto() << 
+         "(" << publicacao -> getAutor() << ")" << "[" << 
+            publicacao -> getCurtidas() << "]"<<endl;
+    }
+    cout<<"Digite o numero da mensagem para curtir ou 0 para voltar: "<<endl;
+    cin>>curtida;
+    if(curtida!=0){
+        publicacao = publicacoes[curtida-1];
+        publicacao->curtir(perfil);
+    }
+}
+
 string imprimirGetDepartamento(){
     string departamento;
     cout << "Departamento: ";
