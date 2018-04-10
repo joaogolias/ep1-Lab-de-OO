@@ -10,18 +10,30 @@ using namespace std;
 int getTamanhoDaRede();
 int imprimirEscolhaUmaOpcao();
 string imprimirGetDepartamento();
+Perfil * imprimirEscolhaUmPerfil(int quantidadeDePerfis, RedeSocial *rede);
 Disciplina* imprimirInformeOsDadosDaDisciplina();
 Perfil* imprimirInformaOsDadosDoPerfil();
 
 int main(){
-    int tamanhoDaRede, escolhaUmaOpcao;
+    Perfil *perfilGenerico;
+    int tamanhoDaRede, escolhaUmaOpcao, quantidadeDePerfis = 0;
+    tamanhoDaRede = getTamanhoDaRede();
+    RedeSocial *rede = new RedeSocial(tamanhoDaRede);
+    escolhaUmaOpcao = imprimirEscolhaUmaOpcao();
     //tamanhoDaRede = getTamanhoDaRede();
     //escolhaUmaOpcao = imprimirEscolhaUmaOpcao()
-
-    Perfil *p = imprimirInformaOsDadosDoPerfil();
-    cout << p->getNome() << endl;
-    p = imprimirInformaOsDadosDoPerfil();
-    cout << p->getNome() << endl;
+    while(escolhaUmaOpcao != 0){
+        if(escolhaUmaOpcao == 1){
+            perfilGenerico = imprimirInformaOsDadosDoPerfil();
+            rede -> adicionar(perfilGenerico);
+            quantidadeDePerfis ++;
+        }
+        if(escolhaUmaOpcao == 3){
+            perfilGenerico = imprimirEscolhaUmPerfil(quantidadeDePerfis, rede);
+            cout << "NOME DO PERFIL LOGADO: " << perfilGenerico -> getNome() << endl;
+        }
+        if(escolhaUmaOpcao != 0) escolhaUmaOpcao = imprimirEscolhaUmaOpcao();
+    }
     // Professor* aptr = dynamic_cast<Professor*>(p);
     // Perfil *a = dynamic_cast<Perfil*>(p);
     // if(aptr == 0) cout << "P is not a professor" <<endl;
@@ -148,7 +160,20 @@ Perfil* imprimirInformaOsDadosDoPerfil(){
 
     return perfilACadastrar;
 }
-
+Perfil * imprimirEscolhaUmPerfil(int quantidadeDePerfis, RedeSocial *rede){
+    int escolha;
+    Perfil **perfis;
+    cout << "Escolha um perfil: " <<endl;
+    for(int i = 0; i < quantidadeDePerfis; i++){
+        perfis = rede -> getPerfis();
+        Perfil *perfil = perfis[i];
+        cout << i+1 << ") " << perfil -> getNome() << endl;
+    }
+    cout << "Digite o número ou 0 para cancelar: "<<endl;
+    cin >> escolha;
+    if(escolha != 0) return perfis[escolha-1];
+    return NULL;
+}
 string imprimirGetDepartamento(){
     string departamento;
     cout << "Departamento: ";

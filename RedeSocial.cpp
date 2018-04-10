@@ -28,6 +28,7 @@ bool RedeSocial::adicionar(Perfil *p){
     }
     this->perfis[this->quantidadeDePerfis] = p;
     this->quantidadeDePerfis++;
+    cout << "***APAGAR*** Perfil adicionado" << endl;
     return true;
 }
 
