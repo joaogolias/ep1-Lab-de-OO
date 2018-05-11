@@ -35,13 +35,16 @@ int main(){
     tamanhoDaRede = getTamanhoDaRede();
     RedeSocial *rede = new RedeSocial(tamanhoDaRede);
     escolhaUmaOpcao = imprimirEscolhaUmaOpcao();
-    //tamanhoDaRede = getTamanhoDaRede();
-    //escolhaUmaOpcao = imprimirEscolhaUmaOpcao()
     while(escolhaUmaOpcao != 0){
         if(escolhaUmaOpcao == 1){
-            perfilGenerico = imprimirInformaOsDadosDoPerfil();
-            adicionarPerfilNaRede(rede, perfilGenerico, quantidadeDePerfis, tamanhoDaRede);
-            quantidadeDePerfis ++;
+            if(quantidadeDePerfis >= 0){
+                perfilGenerico = imprimirInformaOsDadosDoPerfil();
+                adicionarPerfilNaRede(rede, perfilGenerico, quantidadeDePerfis, tamanhoDaRede);
+                quantidadeDePerfis ++;
+            } else{
+                cout << "\n\n\n"; 
+                cout << "Nenhum perfil foi encontrado."<<endl;
+            }
         }
         if(escolhaUmaOpcao == 2){
             Disciplina* disciplina = imprimirInformeOsDadosDaDisciplina(quantidadeDePerfis, rede);
@@ -52,9 +55,7 @@ int main(){
         }
         if(escolhaUmaOpcao == 3){
             escolhaPerfil = 4;
-            cout << "oi" << endl;
             while(escolhaPerfil != 0){
-                cout << "oi2" << endl;
                 if(escolhaPerfil == 1){
                     imprimirVerPublicacoes(perfilGenerico);
                 }
@@ -62,8 +63,8 @@ int main(){
                     imprimirFazerPublicacao(perfilGenerico);
                 }
                 if(escolhaPerfil == 3){
-                    Disciplina *disciplina = dynamic_cast<Disciplina*>(perfilGenerico);
-                    if(disciplina != NULL){
+                    Disciplina *disciplinaPerfil = dynamic_cast<Disciplina*>(perfilGenerico);
+                    if(disciplinaPerfil != NULL){
                         cout << "Escolha um número válido" << endl;
                     } else {
                         imprimirSeguirPerfil(perfilGenerico, quantidadeDePerfis, rede);
@@ -72,9 +73,8 @@ int main(){
                 if(escolhaPerfil > 3){
                     cout << "Escolha um número válido." << endl;
                 }
-                cout << "oi3" << endl;
                 perfilGenerico = imprimirEscolhaUmPerfil(quantidadeDePerfis, rede);
-                if(perfilGenerico!=NULL){
+                if(perfilGenerico != NULL){
                     escolhaPerfil = imprimirPerfil(perfilGenerico);
                 }
                 else{
@@ -84,88 +84,6 @@ int main(){
         }
         if(escolhaUmaOpcao != 0) escolhaUmaOpcao = imprimirEscolhaUmaOpcao();
     }
-    // Professor* aptr = dynamic_cast<Professor*>(p);
-    // Perfil *a = dynamic_cast<Perfil*>(p);
-    // if(aptr == 0) cout << "P is not a professor" <<endl;
-    // if(a == 0) cout << "P is not a perfil" <<endl;
-
-
-    // while(escolhaUmaOpcao != 0){
-        
-    // }
-
-
-    /*
-
-    USANDO GET LINE PARA PEGAR STRING
-
-
-    string nome;
-    cout << "Qual seu nome? " << endl;
-    //cin.ignore(100, '\n');
-    getline(cin, nome);
-    cout<<"nome: "<< nome <<endl;
-
-    */
-
-
-
-
-    /*
-
-    VERIFICAÇÃO DA CLASSE COM dynamic_cast ===> PODE USAR!!
-
-
-    Perfil *prof1 = new Professor(8992902, "Levy", "joaovgolias@gmail.com", "PCS");
-    Professor* aptr = dynamic_cast<Professor*>(prof1);
-    if(aptr == 0) cout << "Prof1 is not a professor" <<endl;
-    else cout << "Prof1 is a professor" <<endl;
-    */
-
-    
-    
-    /*
-
-    EXEMPLOS DE ITERAÇÕES
-
-
-
-
-    Professor *prof1 = new Professor(8992902, "Levy", "joaovgolias@gmail.com", "PCS");
-    Perfil *disciplina = new Disciplina("PCS3111", "Lab de OO", prof1);
-    Perfil *p3 = new Perfil(7654321, "Victor", "joaovgolias@gmail.com");
-    RedeSocial *redeSocial = new RedeSocial(3);
-
-    prof1 -> adicionarSeguidor(p3);
-
-    prof1 -> publicar("Sou um professor");
-    disciplina ->publicar ("Sou uma disciplina");
-    p3 -> publicar("Sou P3");
-
-    bool a = redeSocial->adicionar(prof1);
-    bool b = redeSocial->adicionar(disciplina);
-    bool c = redeSocial->adicionar(p3);
-
-    if(a == true) cout << "A = true" << endl;
-    if(b == true) cout << "B = true" << endl;
-    if(c == true) cout << "C = true" << endl;
-
-    Perfil** perfis = redeSocial -> getPerfis();
-    Perfil* p1 = perfis[0];
-    Perfil *p2 = perfis[1];
-    Publicacao ** publicacoes1 = p1->publicacoes;
-    Publicacao ** publicacoes2 = p2->publicacoes;
-    Publicacao ** publicacoes3 = p3->publicacoes;
-
-    cout<<"Publicacao 1 do prof: "<<publicacoes1[0] ->getTexto() << endl;
-    cout<<"Publicacao 2 do prof: "<<publicacoes1[1] ->getTexto() << endl;
-    cout<<"\n\n"<<endl;
-    cout<<"Publicacao 2: "<<publicacoes2[0] ->getTexto() << endl;
-    cout<<"\n\n"<<endl;
-    cout<<"Publicacao 1 do p3: "<<publicacoes3[0] ->getTexto() << endl;
-    cout<<"Publicacao 2 do p3: "<<publicacoes3[1] ->getTexto() << endl;
-    delete redeSocial;
-    */
     return 0;
 }
 
@@ -231,7 +149,7 @@ Perfil* imprimePerfis(int quantidadeDePerfis, RedeSocial *rede){
             Perfil *perfil = perfis[i];
             cout << i+1 << ") " << perfil -> getNome() << endl;
         }
-        cout << "Digite o número ou 0 para cancelar:" << endl;
+        cout << "Digite o número ou 0 para cancelar:";
         cin >> numero;
     } while(numero > quantidadeDePerfis);
 
@@ -261,16 +179,16 @@ int imprimirPerfil(Perfil *perfil){
 }
 
 Disciplina* imprimirInformeOsDadosDaDisciplina(int quantidadeDePerfis, RedeSocial *rede){
-    ws(cin);    
     cout << "\n\n\n";
     string nome, sigla;
     int numero = 0;
     cout << "Informe os dados da disciplina" << endl;
-    cout << "Sigla: " << endl;
+    cout << "Sigla: ";
+    ws(cin);        
     getline(cin, sigla);
-    cout << "Nome: " << endl;
+    cout << "Nome: ";
     getline(cin, nome);
-    cout << "Responsáveis: ";
+    cout << "Responsável: " << endl;
     Perfil *responsavel = imprimePerfis(quantidadeDePerfis, rede);
     Professor *isProfessor = dynamic_cast<Professor*>(responsavel);
     if(isProfessor != NULL){
