@@ -10,6 +10,8 @@ class Disciplina: public Perfil{
         virtual ~Disciplina();
         Professor *getResponsavel();
         string getSigla();
+        bool adicionarSeguidor(Perfil *seguidor);
+        void receberPublicacao(Publicacao *p);
     
     protected:
         string sigla;

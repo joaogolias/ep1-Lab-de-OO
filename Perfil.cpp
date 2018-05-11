@@ -21,10 +21,6 @@ Perfil::~Perfil(){
     } 
 }
 
-int Perfil::getNumeroUSP(){
-    return this->numeroUSP;
-}
-
 string Perfil::getNome(){
     return this->nome;
 }
@@ -34,9 +30,26 @@ string Perfil::getEmail(){
 }
 
 bool Perfil::adicionarSeguidor(Perfil *seguidor){
+    
     if(this->quanitdadeDeSeguidores>=MAXIMO_SEGUIDORES){
         return false;
     }
+
+    if(seguidor->getNome() == this->nome &&
+        seguidor->getEmail() == this->email &&
+            seguidor->getNumeroUSP() == this->numeroUSP){
+                return false;
+            }
+
+    for(int i = 0; i<this->quanitdadeDeSeguidores; i++){
+        Perfil *seguidos = this->seguidores[i];
+        if(seguidor->getNome() == seguidos->getNome() &&
+            seguidor->getEmail() == seguidos->getEmail() &&
+                seguidor->getNumeroUSP() == seguidos->getNumeroUSP()){
+                    return false;
+                }
+    }
+
     this->seguidores[this->quanitdadeDeSeguidores] = seguidor;
     this->quanitdadeDeSeguidores++;
     string nome = seguidor -> getNome();
@@ -69,6 +82,7 @@ bool Perfil::publicar(string texto, string data){
     }
     Evento *evento = new Evento(texto, this, data);
     this->publicacoes[this->quantidaDePublicacoes] = evento;
+    this->quantidaDePublicacoes++;
     for(int i = 0; i<this->quanitdadeDeSeguidores;i++){
        Perfil *seguidor = this->seguidores[i];
        seguidor->receberPublicacao(evento);
@@ -97,6 +111,10 @@ Perfil** Perfil::getSeguidores(){
 
 int Perfil::getQuanitdadeDeSeguidores(){
     return this->quanitdadeDeSeguidores;
+}
+
+int Perfil::getNumeroUSP(){
+    return this->numeroUSP;
 }
 
 

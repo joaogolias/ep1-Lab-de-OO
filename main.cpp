@@ -45,7 +45,12 @@ int main(){
                 }
                 cout << "oi3" << endl;
                 perfilGenerico = imprimirEscolhaUmPerfil(quantidadeDePerfis, rede);
-                escolhaPerfil = imprimirPerfil(perfilGenerico);
+                if(perfilGenerico!=NULL){
+                    escolhaPerfil = imprimirPerfil(perfilGenerico);
+                }
+                else{
+                    escolhaPerfil = 0;
+                }
             }
         }
         if(escolhaUmaOpcao != 0) escolhaUmaOpcao = imprimirEscolhaUmaOpcao();
@@ -197,14 +202,14 @@ int imprimirPerfil(Perfil *perfil){
     int escolha;
     cout << perfil -> getNumeroUSP() << " - " << perfil -> getNome() << endl;
     Professor *isProfessor = dynamic_cast<Professor*>(perfil);
-    if(isProfessor != 0)cout << "Departamento "<< isProfessor -> getDepartamento() << endl;
+    if(isProfessor != NULL)cout << "Departamento "<< isProfessor -> getDepartamento() << endl;
     cout << "Seguidores: " << perfil -> getQuanitdadeDeSeguidores() << endl;
     cout << "---" << endl;
     cout << "Escolha uma opção: " << endl;
     cout << "1) Ver publicacoes" << endl;
     cout << "2) Fazer publicacao" << endl;
     Disciplina *disciplina = dynamic_cast<Disciplina*>(perfil);
-    if(disciplina == 0) cout << "3) Seguir perfil" << endl;
+    if(disciplina == NULL) cout << "3) Seguir perfil" << endl;
     cout << "0) Deslogar" << endl;
     cin >> escolha;
     return escolha;
@@ -212,39 +217,56 @@ int imprimirPerfil(Perfil *perfil){
 
 void imprimirFazerPublicacao(Perfil *perfil){
     string evento, texto, data;
-    cout << "Evento (s/n): " << endl;
-    getline(cin, evento);
-    cin.ignore(100,"\n");    
+    cout << "Evento (s/n):" << endl;
+    ws(cin);
+    getline(cin, evento); 
     if(evento == "s"){
         cout << "Data: " << endl;
+        ws(cin);
         getline(cin, data);
         cout << "Texto: " << endl;
+        ws(cin);
         getline(cin, texto);
-        perfil -> publicar(texto,data);
+        bool teste = perfil -> publicar(texto,data);
+        if(teste) cout << "Foi" << endl;
     }
     else{
         cout << "Texto: " << endl;
+        ws(cin);
         getline(cin, texto);
-        perfil -> publicar(texto);
+        bool teste2 = perfil -> publicar(texto);
+        if(teste2) cout << "Foi" << endl;
     }
     
 }
 void imprimirVerPublicacoes(Perfil *perfil){
-    int curtida;
-    cout << "Publicacoes"<<endl;
-    Publicacao *publicacao;
-    Publicacao **publicacoes = perfil -> getPublicacoes();
-    for(int i = 0; i < perfil->getQuantidaDePublicacoes(); i++){
-        publicacao = publicacoes[i];
-        cout << i+1 << ") " << publicacao -> getTexto() << 
-         "(" << publicacao -> getAutor() << ")" << "[" << 
-            publicacao -> getCurtidas() << "]"<<endl;
-    }
-    cout<<"Digite o numero da mensagem para curtir ou 0 para voltar: "<<endl;
-    cin>>curtida;
-    if(curtida!=0){
-        publicacao = publicacoes[curtida-1];
-        publicacao->curtir(perfil);
+    if(perfil -> getQuantidaDePublicacoes() !=0){
+        int curtida;
+        cout << "Publicacoes"<<endl;
+        Publicacao *publicacao;
+        Publicacao **publicacoes = perfil -> getPublicacoes();
+        for(int i = 0; i < perfil->getQuantidaDePublicacoes(); i++){
+            publicacao = publicacoes[i];
+            Evento* evento = dynamic_cast<Evento*>(publicacao);
+            if(evento == NULL){
+                Perfil *autor = publicacao -> getAutor();
+                cout << i+1 << ") " << publicacao -> getTexto() << 
+                    "(" << autor -> getNome() << ")" << "[" << 
+                        publicacao -> getCurtidas() << "]"<<endl;
+            } else {
+                Perfil *autor = evento -> getAutor();
+                cout << i+1 << ") " << evento -> getData() << " - " << evento -> getTexto() << 
+                    "(" << autor -> getNome() << ")" << "[" << 
+                        evento -> getCurtidas() << "]"<<endl;
+            }
+           
+        }
+        cout<<"Digite o numero da mensagem para curtir ou 0 para voltar: "<<endl;
+        cin>>curtida;
+        if(curtida!=0){
+            publicacao = publicacoes[curtida-1];
+            publicacao->curtir(perfil);
+        }
     }
 }
 
