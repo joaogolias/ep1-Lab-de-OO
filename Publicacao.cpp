@@ -7,7 +7,8 @@ Publicacao::Publicacao(string texto, Perfil *autor):
     texto(texto), autor(autor){}
 
 Publicacao::~Publicacao(){
-    cout<<"Destruindo a publicacão"<<endl;
+    cout<<"Destruindo a publicacão " << this->texto << " do autor " <<
+    this->autor->getNome() << endl;
 }
 
 Perfil* Publicacao::getAutor(){

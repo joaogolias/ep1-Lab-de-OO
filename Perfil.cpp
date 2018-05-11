@@ -17,7 +17,16 @@ Perfil::Perfil(int numeroUSP, string nome, string email):
 Perfil::~Perfil(){
     cout<< "Destruindo perfil de " << this->nome << endl;
     for (int i=0; i<this->quantidaDePublicacoes;i++){
-        if(publicacoes[i] != NULL) delete this->publicacoes[i];
+        Publicacao *p = publicacoes[i];
+        if(p != NULL){
+            Perfil *autor = p->getAutor();
+            if(autor -> getNumeroUSP() == this->numeroUSP &&
+                autor -> getEmail() == this-> email &&
+                 autor -> getNome() == this->nome){
+                    p == NULL;
+                    delete p;
+            }
+        }
     } 
 }
 

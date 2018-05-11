@@ -11,12 +11,12 @@ using namespace std;
 
 Evento::Evento(string texto, Perfil* autor, string data): 
     Publicacao::Publicacao(texto,autor), data(data){
-        cout << "Construindo o evento do autor " << this->autor <<
+        cout << "Construindo o evento do autor " << this->autor->getNome() <<
             " no dia " << this->data << endl;
 }
 
 Evento::~Evento(){
-    cout << "Destruindo o evento de " << this->autor<<
+    cout << "Destruindo o evento de " << this->autor->getNome()<<
         "do dia " << this->data<<endl;
 }
 

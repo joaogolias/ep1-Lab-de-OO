@@ -45,6 +45,9 @@ void Disciplina::receberPublicacao(Publicacao *p){}
 Disciplina::~Disciplina(){
     cout << "Destruindo a disciplina " << this-> nome
         << "(" << this->sigla << ")";
+    // for (int i=0; i<this->quantidaDePublicacoes;i++){
+    //     if(publicacoes[i] != NULL) delete this->publicacoes[i];
+    // } 
 }
 Professor *Disciplina::getResponsavel(){
     return this->responsavel;

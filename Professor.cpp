@@ -14,6 +14,9 @@ Professor::Professor(int numeroUSP, string nome, string email, string departamen
 
 Professor::~Professor(){
     cout<<"Destruindo o professor " << this->nome <<endl;
+    // for (int i=0; i<this->quantidaDePublicacoes;i++){
+    //     if(publicacoes[i] != NULL) delete this->publicacoes[i];
+    // } 
 }
 
 string Professor::getDepartamento(){
