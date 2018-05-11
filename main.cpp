@@ -10,13 +10,24 @@ using namespace std;
 
 int getTamanhoDaRede();
 int imprimirEscolhaUmaOpcao();
+int imprimirPerfil(Perfil *perfil);
+
+
 string imprimirGetDepartamento();
-Perfil * imprimirEscolhaUmPerfil(int quantidadeDePerfis, RedeSocial *rede);
-Disciplina* imprimirInformeOsDadosDaDisciplina();
-Perfil* imprimirInformaOsDadosDoPerfil();
+
+void imprimirSeguirPerfil(Perfil *perfil, int quantidadeDePerfis, RedeSocial *rede);
 void imprimirFazerPublicacao(Perfil *perfil);
 void imprimirVerPublicacoes(Perfil *perfil);
-int imprimirPerfil(Perfil *perfil);
+void adicionarPerfilNaRede(RedeSocial *rede, Perfil *perfil, 
+        int quantidadeDePerfis, int tamanhoDaRede);
+
+
+Perfil* imprimePerfis(int quantidadeDePerfis, RedeSocial *rede);
+Perfil * imprimirEscolhaUmPerfil(int quantidadeDePerfis, RedeSocial *rede); 
+Perfil* imprimirInformaOsDadosDoPerfil();
+
+Disciplina* imprimirInformeOsDadosDaDisciplina(int quantidadeDePerfis, RedeSocial *rede);
+
 
 int main(){
     Perfil *perfilGenerico;
@@ -29,8 +40,15 @@ int main(){
     while(escolhaUmaOpcao != 0){
         if(escolhaUmaOpcao == 1){
             perfilGenerico = imprimirInformaOsDadosDoPerfil();
-            rede -> adicionar(perfilGenerico);
+            adicionarPerfilNaRede(rede, perfilGenerico, quantidadeDePerfis, tamanhoDaRede);
             quantidadeDePerfis ++;
+        }
+        if(escolhaUmaOpcao == 2){
+            Disciplina* disciplina = imprimirInformeOsDadosDaDisciplina(quantidadeDePerfis, rede);
+            if(disciplina!=NULL){
+                adicionarPerfilNaRede(rede, perfilGenerico, quantidadeDePerfis, tamanhoDaRede);
+                quantidadeDePerfis ++;
+            }
         }
         if(escolhaUmaOpcao == 3){
             escolhaPerfil = 4;
@@ -42,6 +60,17 @@ int main(){
                 }
                 if(escolhaPerfil == 2){
                     imprimirFazerPublicacao(perfilGenerico);
+                }
+                if(escolhaPerfil == 3){
+                    Disciplina *disciplina = dynamic_cast<Disciplina*>(perfilGenerico);
+                    if(disciplina != NULL){
+                        cout << "Escolha um número válido" << endl;
+                    } else {
+                        imprimirSeguirPerfil(perfilGenerico, quantidadeDePerfis, rede);
+                    }
+                }
+                if(escolhaPerfil > 3){
+                    cout << "Escolha um número válido." << endl;
                 }
                 cout << "oi3" << endl;
                 perfilGenerico = imprimirEscolhaUmPerfil(quantidadeDePerfis, rede);
@@ -148,6 +177,7 @@ int getTamanhoDaRede(){
 }
 
 int imprimirEscolhaUmaOpcao(){
+    cout << "\n\n\n";
     int opcao;
     cout << "Escolha uma opcao:" << endl <<
         "1) Cadastrar Perfil" << endl <<
@@ -160,6 +190,7 @@ int imprimirEscolhaUmaOpcao(){
 
 
 Perfil* imprimirInformaOsDadosDoPerfil(){
+    cout << "\n\n\n";
     Perfil *perfilACadastrar;
     int nusp;
     string nome, email, ehProfessor, departamento;
@@ -184,21 +215,35 @@ Perfil* imprimirInformaOsDadosDoPerfil(){
 
 
 Perfil * imprimirEscolhaUmPerfil(int quantidadeDePerfis, RedeSocial *rede){
+    cout << "\n\n\n";
     int escolha;
     Perfil **perfis;
     cout << "Escolha um perfil: " <<endl;
-    for(int i = 0; i < quantidadeDePerfis; i++){
-        perfis = rede -> getPerfis();
-        Perfil *perfil = perfis[i];
-        cout << i+1 << ") " << perfil -> getNome() << endl;
+    return imprimePerfis(quantidadeDePerfis, rede);
+}
+
+Perfil* imprimePerfis(int quantidadeDePerfis, RedeSocial *rede){
+    int numero = 0;
+    Perfil **perfis = rede -> getPerfis();
+    do{
+        if(numero != 0) cout << "Digite um número válido.";
+        for(int i = 0; i < quantidadeDePerfis; i++){
+            Perfil *perfil = perfis[i];
+            cout << i+1 << ") " << perfil -> getNome() << endl;
+        }
+        cout << "Digite o número ou 0 para cancelar:" << endl;
+        cin >> numero;
+    } while(numero > quantidadeDePerfis);
+
+    if(numero != 0 && numero <= quantidadeDePerfis) {
+        Perfil *responsavel = perfis[numero-1];
+        return responsavel;
     }
-    cout << "Digite o número ou 0 para cancelar: "<<endl;
-    cin >> escolha;
-    if(escolha != 0 && escolha<=quantidadeDePerfis) return perfis[escolha-1];
     return NULL;
 }
 
 int imprimirPerfil(Perfil *perfil){
+    cout << "\n\n\n";
     int escolha;
     cout << perfil -> getNumeroUSP() << " - " << perfil -> getNome() << endl;
     Professor *isProfessor = dynamic_cast<Professor*>(perfil);
@@ -215,24 +260,43 @@ int imprimirPerfil(Perfil *perfil){
     return escolha;
 }
 
+Disciplina* imprimirInformeOsDadosDaDisciplina(int quantidadeDePerfis, RedeSocial *rede){
+    ws(cin);    
+    cout << "\n\n\n";
+    string nome, sigla;
+    int numero = 0;
+    cout << "Informe os dados da disciplina" << endl;
+    cout << "Sigla: " << endl;
+    getline(cin, sigla);
+    cout << "Nome: " << endl;
+    getline(cin, nome);
+    cout << "Responsáveis: ";
+    Perfil *responsavel = imprimePerfis(quantidadeDePerfis, rede);
+    Professor *isProfessor = dynamic_cast<Professor*>(responsavel);
+    if(isProfessor != NULL){
+        Disciplina *disciplina = new Disciplina(sigla, nome, isProfessor);
+        return disciplina;
+    }
+    cout << "Somente professores podem ser responsáveos por disciplinas";
+    return NULL;                
+}
+
 void imprimirFazerPublicacao(Perfil *perfil){
+    cout << "\n\n\n";
     string evento, texto, data;
     cout << "Evento (s/n):" << endl;
     ws(cin);
     getline(cin, evento); 
     if(evento == "s"){
         cout << "Data: " << endl;
-        ws(cin);
         getline(cin, data);
         cout << "Texto: " << endl;
-        ws(cin);
         getline(cin, texto);
         bool teste = perfil -> publicar(texto,data);
         if(teste) cout << "Foi" << endl;
     }
     else{
         cout << "Texto: " << endl;
-        ws(cin);
         getline(cin, texto);
         bool teste2 = perfil -> publicar(texto);
         if(teste2) cout << "Foi" << endl;
@@ -240,6 +304,7 @@ void imprimirFazerPublicacao(Perfil *perfil){
     
 }
 void imprimirVerPublicacoes(Perfil *perfil){
+    cout << "\n\n\n";
     if(perfil -> getQuantidaDePublicacoes() !=0){
         int curtida;
         cout << "Publicacoes"<<endl;
@@ -269,8 +334,26 @@ void imprimirVerPublicacoes(Perfil *perfil){
         }
     }
 }
+void imprimirSeguirPerfil(Perfil *perfil, int quantidadeDePerfis, RedeSocial *rede){
+    cout << "Perfil: " << endl; 
+    Perfil *perfilASeguir = imprimePerfis(quantidadeDePerfis, rede);
+    bool seguidoSucesso =  perfilASeguir -> adicionarSeguidor(perfil);
+    if(!seguidoSucesso){
+        cout << "Não foi possível seguir este perfil" << endl;
+    }
+}
+
+void adicionarPerfilNaRede(RedeSocial *rede, Perfil *perfil, 
+    int quantidadeDePerfis, int tamanhoDaRede){
+        if(quantidadeDePerfis >= tamanhoDaRede){
+            cout << "Não foi possível adicionar esse perfil. Tamanho da rede atingido" << endl;
+            return;
+        }
+        rede -> adicionar(perfil);
+}
 
 string imprimirGetDepartamento(){
+    cout << "\n\n\n";
     string departamento;
     cout << "Departamento: ";
     getline(cin, departamento);
